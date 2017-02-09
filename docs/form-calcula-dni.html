@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <style>
+        form{
+            padding-top: 15px;
+        }
+
+        #validation-message {
+            padding: 7px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>Utilidades calculo/validacion digito control DNI/NIE</h1>
+            <div class="col-md-12">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#calcula-dni" aria-controls="calcula-dni" role="tab" data-toggle="tab">Calcula Letra DNI/NIE</a></li>
+                    <li role="presentation"><a href="#valida-dni" aria-controls="valida-dni" role="tab" data-toggle="tab">Valida DNI/NIE</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="calcula-dni">
+                        <form id="form-calcula" action="" method="POST" class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="iaNumDNI">Numero DNI/NIE</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="iaNumDNI" placeholder="Input field">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="iaResultado">DNI/NIE con letra</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="iaResultado" placeholder="Input field">
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-md-offset-2">
+                                <button type="submit" class="btn btn-primary">Calcula</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                    
+                    <div role="tabpanel" class="tab-pane" id="valida-dni">
+                        <form id="form-valida" action="" method="POST" class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="iaDNICompleto">Numero DNI/NIE</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="iaDNICompleto" placeholder="Input field">
+                                </div>
+                                <div id="validation-message" class="col-sm-4 hidden">
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-md-offset-2">
+                                <button type="submit" class="btn btn-primary">Valida</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <script src="DNIUtils.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            let calculadoraDNI = new DNIUtils();
+
+            $('#form-calcula').submit(function(e){
+                e.preventDefault();
+
+                let numeroDNI = $('#iaNumDNI').val();
+                let letraCalculada = calculadoraDNI.calculaLetraDNI(numeroDNI);
+
+                if(letraCalculada !== "") {
+                    $('#iaResultado')[0].value = numeroDNI + letraCalculada;
+                }
+                else {
+                    $('#iaResultado')[0].value = "El texto introducido no se corresponde con un DNI/NIE válido."
+                }
+
+
+                return false;
+            });
+
+            $('#form-valida').submit(function(e){
+                e.preventDefault();
+
+                let stringDNI = $('#iaDNICompleto').val();
+
+                if(calculadoraDNI.validaDNI(stringDNI)){
+                    $('#validation-message')[0].innerText = "El DNI/NIE es valido";
+                    $('#validation-message').removeClass('hidden').removeClass('bg-danger').addClass('bg-success');
+                }
+                else {
+                    $('#validation-message')[0].innerText = "El DNI/NIE no es valido";
+                    $('#validation-message').removeClass('hidden').removeClass('bg-success').addClass('bg-danger');
+                }
+
+                return false;
+            });
+        });
+    </script>
+    
+</body>
+
+</html>
