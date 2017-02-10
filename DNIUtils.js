@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Compendio de utilidades para el calculo y comprobacion del digito de control de los DNI/NIE Españoles.
  * Algoritmo basado en la descripcion presente en: http://www.interior.gob.es/ca/web/servicios-al-ciudadano/dni/calculo-del-digito-de-control-del-nif-nie
@@ -33,7 +34,7 @@ DNIUtils.prototype.tablaSustitucionNIE = {'X':0, 'Y':1, 'Z':2};
 DNIUtils.prototype.calculaLetraDNI = function(dni) {
     let dniString = dni.toString();
 
-    let reDNIValido = /(\d{8})/g;
+    let reDNIValido = /^(\d{8})$/g;
 
     let matchDNIValido = reDNIValido.exec(dniString);
 
@@ -43,7 +44,7 @@ DNIUtils.prototype.calculaLetraDNI = function(dni) {
         return this.tablaDigitoControl[indiceControl];
     }
 
-    let reNIEValido = /([X|Y|Z]{1})(\d{7})/g;
+    let reNIEValido = /^([X|x|Y|y|Z|z]{1})(\d{7})$/g;
 
     let matchNIEValido = reNIEValido.exec(dniString);
 
@@ -53,7 +54,7 @@ DNIUtils.prototype.calculaLetraDNI = function(dni) {
 
         let numNIEConverted = this.tablaSustitucionNIE[letraNIE] + numeroNIE;
 
-        let indControlNIE = Number(numeroNIEConverted) % 23;
+        let indControlNIE = Number(numNIEConverted) % 23;
 
         return this.tablaDigitoControl[indControlNIE];
     }
@@ -70,7 +71,7 @@ DNIUtils.prototype.validaDNI = function(dni) {
     let dniString = dni.toString();
 
     // Comprobar se se trata de un dni valido.
-    let reDNIValido = /(\d{8})([a-z|A-Z]{1})/g;
+    let reDNIValido = /^(\d{8})([a-z|A-Z]{1})$/g;
     let matchDNIValido = reDNIValido.exec(dniString);
     
     if(matchDNIValido !== null && matchDNIValido.length === 3) {
@@ -83,12 +84,12 @@ DNIUtils.prototype.validaDNI = function(dni) {
     }
 
     // comprobar si se trata de un nie valido.
-    let reNIEValido = /([X|Y|Z]{1})(\d{7})([a-z|A-Z]{1})/g;
+    let reNIEValido = /^([X|x|Y|y|Z|z]{1})(\d{7})([a-z|A-Z]{1})$/g;
     let matchNIEValido = reNIEValido.exec(dniString);
 
     if(matchNIEValido !== null && matchNIEValido.length === 4) {
         let numNIE = matchNIEValido[1].toUpperCase() + matchNIEValido[2];
-        let letraNIE = matchNIEValido[2];
+        let letraNIE = matchNIEValido[3];
 
         if(this.calculaLetraDNI(numNIE) === letraNIE) {
             return true;
